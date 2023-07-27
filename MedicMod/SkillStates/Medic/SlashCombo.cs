@@ -11,7 +11,7 @@ namespace MedicMod.SkillStates
             this.hitboxName = "Sword";
 
             this.damageType = DamageType.Generic;
-            this.damageCoefficient = Modules.StaticValues.scalpelDamageCoefficient;
+            this.damageCoefficient = Modules.StaticValues.injectionDamageCoefficient;
             this.procCoefficient = 1f;
             this.pushForce = 300f;
             this.bonusForce = Vector3.zero;

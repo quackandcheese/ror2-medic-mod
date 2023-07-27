@@ -10,23 +10,28 @@ namespace MedicMod.SkillStates
 {
     public class Scalpels : BaseSkillState
     {
-        // TODO: Actually make it work like it's supposed to. Right now it's copy-pasted Shoot.cs
+        // TODO: Reduce knockback
 
-        public static float damageCoefficient = Modules.StaticValues.gunDamageCoefficient;
+        public static float damageCoefficient = Modules.StaticValues.scalpelDamageCoefficient;
         public static float procCoefficient = 1f;
-        public static float baseDuration = 0.6f;
-        public static float force = 800f;
+        public static float baseDuration = 0.8f;
+        public static float force = 800f; // If this is knockback -- decrease
         public static float recoil = 3f;
         public static float range = 256f;
         public static GameObject tracerEffectPrefab = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerGoldGat");
+        public static float delayBetweenBulletsMax = 0.1f;
 
         public static int scalpelAmount = 4;
         public static float intermittent = 0.25f;
 
         private float duration;
         private float fireTime;
-        private bool hasFired;
+        private int shotTimes;
         private string muzzleString;
+
+
+
+        private float delayBetweenBullets = 0f;
 
         public override void OnEnter()
         {
@@ -47,18 +52,18 @@ namespace MedicMod.SkillStates
         private void Fire()
         {
 
-            if (!this.hasFired)
+            if (shotTimes < scalpelAmount)
             {
-                this.hasFired = true;
+                shotTimes++;
 
                 base.characterBody.AddSpreadBloom(1.5f);
-                EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, this.muzzleString, false);
-                Util.PlaySound("HenryShootPistol", base.gameObject);
+                //EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, base.gameObject, this.muzzleString, false);
+                Util.PlaySound("Play_merc_sword_swing", base.gameObject);
 
                 if (base.isAuthority)
                 {
                     Ray aimRay = base.GetAimRay();
-                    base.AddRecoil(-1f * Shoot.recoil, -2f * Shoot.recoil, -0.5f * Shoot.recoil, 0.5f * Shoot.recoil);
+                    //base.AddRecoil(-1f * Shoot.recoil, -2f * Shoot.recoil, -0.5f * Shoot.recoil, 0.5f * Shoot.recoil);
 
                     new BulletAttack
                     {
@@ -77,7 +82,7 @@ namespace MedicMod.SkillStates
                         isCrit = base.RollCrit(),
                         owner = base.gameObject,
                         muzzleName = muzzleString,
-                        smartCollision = false,
+                        smartCollision = true,
                         procChainMask = default(ProcChainMask),
                         procCoefficient = procCoefficient,
                         radius = 0.75f,
@@ -97,18 +102,16 @@ namespace MedicMod.SkillStates
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-
-            float delayBetweenBullets = 0f;
-            float delayBetweenBulletsMax = 0.1f;
             delayBetweenBullets += Time.deltaTime;
+            if (delayBetweenBullets >= delayBetweenBulletsMax)
+            {
+                Fire();
+                delayBetweenBullets = 0f;
+            }
 
             if (base.fixedAge >= this.fireTime)
             {
-                if (delayBetweenBullets >= delayBetweenBulletsMax)
-                {
-                    Fire();
-                    delayBetweenBullets = 0f;
-                }
+
             }
 
             if (base.fixedAge >= this.duration && base.isAuthority)

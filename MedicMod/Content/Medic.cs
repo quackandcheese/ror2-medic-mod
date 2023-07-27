@@ -67,12 +67,26 @@ namespace MedicMod.Modules.Survivors
 
         private static UnlockableDef masterySkinUnlockableDef;
 
+
+        public static SkillDef primarySkillDef;
+        public static SkillDef injectSkillDef;
+        public static SkillDef baseGauzeSkillDef;
+        public static SkillDef gauzeSkillDef;
+        public static SkillDef healSkillDef;
+
         public override void InitializeCharacter()
         {
             base.InitializeCharacter();
 
             bodyPrefab.AddComponent<MedicTracker>();
             bodyPrefab.GetComponent<MedicTracker>().enabled = false;
+            for (int i = 0; i < bodyPrefab.GetComponents<EntityStateMachine>().Length; i++) 
+            {
+                if (bodyPrefab.GetComponents<EntityStateMachine>()[i].customName == "Slide")
+                {
+                    bodyPrefab.GetComponents<EntityStateMachine>()[i].customName = "Hook";
+                }
+            }
         }
 
         public override void InitializeUnlockables()
@@ -97,7 +111,7 @@ namespace MedicMod.Modules.Survivors
 
             #region Primary
             //Creates a skilldef for a typical primary 
-            SkillDef primarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo(prefix + "_MEDIC_BODY_PRIMARY_SCALPEL_NAME",
+            primarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo(prefix + "_MEDIC_BODY_PRIMARY_SCALPEL_NAME",
                                                                                       prefix + "_MEDIC_BODY_PRIMARY_SCALPEL_DESCRIPTION",
                                                                                       Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPrimaryIcon"),
                                                                                       new EntityStates.SerializableEntityStateType(typeof(SkillStates.Scalpels)),
@@ -109,14 +123,14 @@ namespace MedicMod.Modules.Survivors
             #endregion
 
             #region Secondary
-            SkillDef injectSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            injectSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_MEDIC_BODY_SECONDARY_INJECTION_NAME",
                 skillNameToken = prefix + "_MEDIC_BODY_SECONDARY_INJECTION_NAME",
                 skillDescriptionToken = prefix + "_MEDIC_BODY_SECONDARY_INJECTION_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.LethalInjection)),
-                activationStateMachineName = "Weapon",
+                activationStateMachineName = "Body",
                 baseMaxStock = 1,
                 baseRechargeInterval = 1f,
                 beginSkillCooldownOnSkillEnd = false,
@@ -126,7 +140,7 @@ namespace MedicMod.Modules.Survivors
                 interruptPriority = EntityStates.InterruptPriority.Skill,
                 resetCooldownTimerOnUse = false,
                 isCombatSkill = true,
-                mustKeyPress = false,
+                mustKeyPress = true,
                 cancelSprintingOnActivation = false,
                 rechargeStock = 1,
                 requiredStock = 1,
@@ -138,35 +152,58 @@ namespace MedicMod.Modules.Survivors
             #endregion
 
             #region Utility
-            SkillDef gauzeSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            gauzeSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_MEDIC_BODY_UTILITY_GRAPPLE_NAME",
+                skillNameToken = prefix + "_MEDIC_BODY_UTILITY_GRAPPLE_NAME",
+                skillDescriptionToken = prefix + "_MEDIC_BODY_UTILITY_GRAPPLE_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.GauzeGrapple)),
+                activationStateMachineName = "Hook",
+                baseMaxStock = 1,
+                baseRechargeInterval = 4f,
+                beginSkillCooldownOnSkillEnd = true,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Any,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = true,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 0 
+            });
+            baseGauzeSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_MEDIC_BODY_UTILITY_GRAPPLE_NAME",
                 skillNameToken = prefix + "_MEDIC_BODY_UTILITY_GRAPPLE_NAME",
                 skillDescriptionToken = prefix + "_MEDIC_BODY_UTILITY_GRAPPLE_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texUtilityIcon"),
-                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Roll)),
-                activationStateMachineName = "Body",
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.BaseActive)),
+                activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
-                baseRechargeInterval = 4f,
+                baseRechargeInterval = 10f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
-                forceSprintDuringState = true,
+                forceSprintDuringState = false,
                 fullRestockOnAssign = true,
-                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
                 resetCooldownTimerOnUse = false,
                 isCombatSkill = false,
                 mustKeyPress = false,
                 cancelSprintingOnActivation = false,
                 rechargeStock = 1,
                 requiredStock = 1,
-                stockToConsume = 1
+                stockToConsume = 0
             });
 
-            Modules.Skills.AddUtilitySkills(bodyPrefab, gauzeSkillDef);
+            Modules.Skills.AddUtilitySkills(bodyPrefab, baseGauzeSkillDef);
             #endregion
 
             #region Special
-            SkillDef healSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            healSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_MEDIC_BODY_SPECIAL_HEAL_NAME",
                 skillNameToken = prefix + "_MEDIC_BODY_SPECIAL_HEAL_NAME",

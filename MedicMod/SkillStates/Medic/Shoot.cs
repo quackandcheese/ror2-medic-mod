@@ -6,7 +6,7 @@ namespace MedicMod.SkillStates
 {
     public class Shoot : BaseSkillState
     {
-        public static float damageCoefficient = Modules.StaticValues.gunDamageCoefficient;
+        public static float damageCoefficient = Modules.StaticValues.scalpelDamageCoefficient;
         public static float procCoefficient = 1f;
         public static float baseDuration = 0.6f;
         public static float force = 800f;

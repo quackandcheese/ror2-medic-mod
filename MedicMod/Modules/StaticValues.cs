@@ -10,10 +10,12 @@ namespace MedicMod.Modules
              + "< ! > Roll has a lingering armor buff that helps to use it aggressively." + Environment.NewLine + Environment.NewLine
              + "< ! > Bomb can be used to wipe crowds with ease." + Environment.NewLine + Environment.NewLine;
 
-        internal const float scalpelDamageCoefficient = 5.0f;
+        internal const float injectionDamageCoefficient = 5.0f;
 
-        internal const float gunDamageCoefficient = 4.2f;
+        internal const float scalpelDamageCoefficient = 0.75f;
 
         internal const float bombDamageCoefficient = 16f;
+
+        internal const float healCoefficient = 0.4f;
     }
 }

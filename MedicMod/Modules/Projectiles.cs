@@ -1,7 +1,9 @@
-﻿using R2API;
+﻿using MedicMod.Content;
+using R2API;
 using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace MedicMod.Modules
@@ -9,12 +11,15 @@ namespace MedicMod.Modules
     internal static class Projectiles
     {
         internal static GameObject bombPrefab;
+        internal static GameObject gauzePrefab;
 
         internal static void RegisterProjectiles()
         {
             CreateBomb();
+            CreateGauze();
 
             AddProjectile(bombPrefab);
+            AddProjectile(gauzePrefab);
         }
 
         internal static void AddProjectile(GameObject projectileToAdd)
@@ -40,6 +45,57 @@ namespace MedicMod.Modules
             ProjectileController bombController = bombPrefab.GetComponent<ProjectileController>();
             if (Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("HenryBombGhost") != null) bombController.ghostPrefab = CreateGhostPrefab("HenryBombGhost");
             bombController.startSound = "";
+        }
+
+        private static void CreateGauze()
+        {
+            gauzePrefab = PrefabAPI.InstantiateClone(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Gravekeeper/GravekeeperHookProjectileSimple.prefab").WaitForCompletion(), "GauzeProjectile", true);
+            Object.Destroy(gauzePrefab.GetComponent<ProjectileSingleTargetImpact>());
+            gauzePrefab.AddComponent<ProjectileGauzeController>();
+            ProjectileController projectileController = gauzePrefab.GetComponent<ProjectileController>();
+            projectileController.allowPrediction = false;
+            //component.ghostPrefab = gameObject;
+            gauzePrefab.GetComponent<ProjectileSimple>().desiredForwardSpeed = 120f;
+            gauzePrefab.GetComponent<ProjectileSimple>().lifetime = 0.6f;
+            gauzePrefab.GetComponent<ProjectileStickOnImpact>().ignoreCharacters = false;
+            //ContentAddition.AddProjectile(gauzePrefab);
+
+            /* -------- OLD VERSION BELOW -------- */
+
+            /*gauzePrefab = CloneProjectilePrefab("loaderhook", "GauzeProjectile");
+
+            ProjectileGauzeController grappleController = gauzePrefab.AddComponent<ProjectileGauzeController>();
+            ProjectileGrappleController oldGrapController = gauzePrefab.GetComponent<ProjectileGrappleController>();
+
+            grappleController.acceleration = oldGrapController.acceleration;
+            grappleController.escapeForceMultiplier = oldGrapController.escapeForceMultiplier;
+            grappleController.initiallMoveImpulse = oldGrapController.initiallMoveImpulse;
+            grappleController.initialLookImpulse = oldGrapController.initialLookImpulse;
+            grappleController.lookAcceleration = oldGrapController.lookAcceleration;
+            grappleController.lookAccelerationRampUpCurve = oldGrapController.lookAccelerationRampUpCurve;
+            grappleController.lookAccelerationRampUpDuration = oldGrapController.lookAccelerationRampUpDuration;
+            grappleController.maxHookDistancePitchModifier = oldGrapController.maxHookDistancePitchModifier;
+            grappleController.minHookDistancePitchModifier = oldGrapController.minHookDistancePitchModifier;
+            grappleController.maxTravelDistance = oldGrapController.maxTravelDistance;
+            grappleController.moveAcceleration = oldGrapController.moveAcceleration;
+            grappleController.nearBreakDistance = oldGrapController.nearBreakDistance;
+            grappleController.normalOffset = oldGrapController.normalOffset;
+            grappleController.hookDistanceRTPCstring = oldGrapController.hookDistanceRTPCstring;
+            grappleController.enterSoundString = oldGrapController.enterSoundString;
+            grappleController.exitSoundString = oldGrapController.exitSoundString;
+            grappleController.ropeEndTransform = grappleController.gameObject.transform.Find("RopeEnd");
+            grappleController.ownerHookStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.GauzeGrapple));
+
+            gauzePrefab.GetComponent<EntityStateMachine>().initialStateType = new EntityStates.SerializableEntityStateType("MedicMod.Content.ProjectileGauzeController+FlyState, MedicMod, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null");//new EntityStates.SerializableEntityStateType(typeof(ProjectileGauzeController));
+            gauzePrefab.GetComponent<EntityStateMachine>().mainStateType = new EntityStates.SerializableEntityStateType("MedicMod.Content.ProjectileGauzeController+FlyState, MedicMod, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null");
+
+
+            GameObject.Destroy(gauzePrefab.GetComponent<ProjectileGrappleController>());*/
+
+            //ProjectileController projectileController = gauzePrefab.GetComponent<ProjectileController>();
+            //if (Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("HenryBombGhost") != null) projectileController.ghostPrefab = CreateGhostPrefab("HenryBombGhost");
+            //projectileController.startSound = "";
+
         }
 
         private static void InitializeImpactExplosion(ProjectileImpactExplosion projectileImpactExplosion)

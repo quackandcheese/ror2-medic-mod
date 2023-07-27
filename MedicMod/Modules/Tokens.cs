@@ -44,7 +44,7 @@ namespace MedicMod.Modules
 
             #region Secondary
             LanguageAPI.Add(prefix + "SECONDARY_INJECTION_NAME", "Lethal Injection");
-            LanguageAPI.Add(prefix + "SECONDARY_INJECTION_DESCRIPTION", Helpers.agilePrefix + $"Deliver a powerful melee attack by injecting a lethal drug, dealing <style=cIsDamage>{100f * StaticValues.gunDamageCoefficient}% damage</style>.");
+            LanguageAPI.Add(prefix + "SECONDARY_INJECTION_DESCRIPTION", Helpers.agilePrefix + $"Deliver a powerful melee attack by injecting a lethal drug, dealing <style=cIsDamage>{100f * StaticValues.injectionDamageCoefficient}% damage</style>.");
             #endregion
 
             #region Utility
@@ -54,7 +54,7 @@ namespace MedicMod.Modules
 
             #region Special
             LanguageAPI.Add(prefix + "SPECIAL_HEAL_NAME", "First Aid");
-            LanguageAPI.Add(prefix + "SPECIAL_HEAL_DESCRIPTION", $"Apply first aid to yourself or an ally, <style=cIsHealing>healing 100 HP</style>.");
+            LanguageAPI.Add(prefix + "SPECIAL_HEAL_DESCRIPTION", $"Apply first aid to yourself or an ally, <style=cIsHealing>healing {100f * StaticValues.healCoefficient}% of their max health</style>.");
             #endregion
 
             #region Achievements

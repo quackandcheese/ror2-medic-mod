@@ -14,11 +14,11 @@ namespace MedicMod.SkillStates
             this.hitboxName = "Sword";
 
             this.damageType = DamageType.PoisonOnHit;
-            this.damageCoefficient = Modules.StaticValues.scalpelDamageCoefficient;
+            this.damageCoefficient = Modules.StaticValues.injectionDamageCoefficient;
             this.procCoefficient = 1f;
             this.pushForce = 300f;
             this.bonusForce = Vector3.zero;
-            this.baseDuration = 1f;
+            this.baseDuration = 0.5f;
             this.attackStartTime = 0.2f;
             this.attackEndTime = 0.4f;
             this.baseEarlyExitTime = 0.4f;
@@ -26,7 +26,7 @@ namespace MedicMod.SkillStates
             this.attackRecoil = 0.5f;
             this.hitHopVelocity = 4f;
 
-            this.swingSoundString = "HenrySwordSwing";
+            this.swingSoundString = "Play_acrid_m1_slash"; //Play_acrid_m1_bigSlash
             this.hitSoundString = "";
             this.muzzleString = "SwingLeft";
             this.swingEffectPrefab = Modules.Assets.swordSwingEffect;

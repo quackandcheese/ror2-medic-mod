@@ -11,12 +11,14 @@ namespace MedicMod.SkillStates
     public class FirstAid : BaseSkillState
     {
         public static float duration = 0.5f;
-        public static float healAmount = 100f;
+        public static float healCoefficient = Modules.StaticValues.healCoefficient;
 
         private MedicTracker tracker;
         private bool exitPending;
         private float exitCountdown;
         private float entryCountdown;
+
+        private float healAmount;
 
         public override void OnEnter()
         {
@@ -68,6 +70,7 @@ namespace MedicMod.SkillStates
                     if (allyHealth.health >= allyHealth.fullHealth)
                         return;
 
+                    healAmount = allyHealth.fullHealth * healCoefficient;
                     allyHealth.Heal(healAmount, default(ProcChainMask), false);
                     // Throw pills anim + projectiles?
                     this.exitPending = true;
@@ -78,6 +81,7 @@ namespace MedicMod.SkillStates
                     if (healthComponent.health >= healthComponent.fullHealth)
                         return;
 
+                    healAmount = healthComponent.fullHealth * healCoefficient;
                     healthComponent.Heal(healAmount, default(ProcChainMask), false);
                     // Downing pill bottle anim
                     this.exitPending = true;

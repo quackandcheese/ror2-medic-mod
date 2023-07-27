@@ -14,6 +14,12 @@ namespace MedicMod.Content
     [RequireComponent(typeof(TeamComponent))]
     public class MedicTracker : MonoBehaviour
     {
+        private enum Mode
+        {
+            Healing,
+            Grappling
+        }
+
         private void Awake()
         {
             // Maybe replace with custom healing icon indicator
@@ -59,7 +65,7 @@ namespace MedicMod.Content
         {
             // Changed GetUnprotectedTeams to GetEnemyTeams for teammate targeting
             // TODO: Change to include teammates AND enemies
-            this.search.teamMaskFilter = TeamMask.GetEnemyTeams(this.teamComponent.teamIndex);
+            this.search.teamMaskFilter = TeamMask.GetEnemyTeams(TeamIndex.Monster);
 
             this.search.filterByLoS = true;
             this.search.searchOrigin = aimRay.origin;
