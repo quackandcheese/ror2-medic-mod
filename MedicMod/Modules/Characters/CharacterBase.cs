@@ -1,4 +1,5 @@
-﻿using RoR2;
+﻿using MedicMod.SkillStates;
+using RoR2;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -66,6 +67,10 @@ namespace MedicMod.Modules.Characters
                 bodyPrefab.GetComponent<EntityStateMachine>().initialStateType = new EntityStates.SerializableEntityStateType(characterSpawnState);
                 Modules.Content.AddEntityState(characterSpawnState);
             }
+
+            /*var grappleStateMachine = bodyPrefab.AddComponent<EntityStateMachine>();
+            grappleStateMachine.customName = "Grapple";
+            grappleStateMachine.mainStateType = new EntityStates.SerializableEntityStateType(typeof(BaseActive));*/
         }
 
         public abstract void InitializeSkills();

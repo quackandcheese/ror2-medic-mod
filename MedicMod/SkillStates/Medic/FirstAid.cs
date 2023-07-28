@@ -28,6 +28,8 @@ namespace MedicMod.SkillStates
             // Replace with custom tracker component that targets teammates instead of enemies
             tracker = base.gameObject.GetComponent<MedicTracker>();
             tracker.enabled = true;
+            tracker.mode = MedicTracker.Mode.Healing;
+
             this.entryCountdown = 0.1f;
             this.exitCountdown = 0.25f;
             exitPending = false;

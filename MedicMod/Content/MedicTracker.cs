@@ -14,7 +14,7 @@ namespace MedicMod.Content
     [RequireComponent(typeof(TeamComponent))]
     public class MedicTracker : MonoBehaviour
     {
-        private enum Mode
+        public enum Mode
         {
             Healing,
             Grappling
@@ -65,7 +65,15 @@ namespace MedicMod.Content
         {
             // Changed GetUnprotectedTeams to GetEnemyTeams for teammate targeting
             // TODO: Change to include teammates AND enemies
-            this.search.teamMaskFilter = TeamMask.GetEnemyTeams(TeamIndex.Monster);
+            switch (mode)
+            {
+                case Mode.Healing:
+                    this.search.teamMaskFilter = TeamMask.GetEnemyTeams(TeamIndex.Monster);
+                    break;
+                case Mode.Grappling:
+                    this.search.teamMaskFilter = TeamMask.all;
+                    break;
+            }
 
             this.search.filterByLoS = true;
             this.search.searchOrigin = aimRay.origin;
@@ -78,9 +86,11 @@ namespace MedicMod.Content
             this.trackingTarget = this.search.GetResults().FirstOrDefault<HurtBox>();
         }
 
-        public float maxTrackingDistance = float.MaxValue;
+        public Mode mode;
 
-        public float maxTrackingAngle = 20f;
+        public float maxTrackingDistance = 60f;
+
+        public float maxTrackingAngle = 40f;
 
         public float trackerUpdateFrequency = 10f;
 

@@ -19,6 +19,7 @@ namespace MedicMod.SkillStates
             base.OnEnter();
             medicTracker = base.gameObject.GetComponent<MedicTracker>();
             medicTracker.enabled = true;
+            medicTracker.mode = MedicTracker.Mode.Grappling;
 
             SkillLocator skillLocator = base.skillLocator;
             GenericSkill genericSkill = (skillLocator != null) ? skillLocator.primary : null;

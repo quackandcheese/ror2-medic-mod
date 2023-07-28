@@ -543,26 +543,26 @@ namespace MedicMod.Content
             }
             if (this.stickComponent && this.stickComponent.stuck && this.stickComponent.victim)
             {
-                CharacterBody component3 = this.stickComponent.victim.GetComponent<CharacterBody>();
-                if (component3)
+                CharacterBody victimBody = this.stickComponent.victim.GetComponent<CharacterBody>();
+                if (victimBody)
                 {
-                    GauzeGrapple utility;
-                    if (this.stateMachine && (utility = (this.stateMachine.state as GauzeGrapple)) != null)
+                    GauzeGrapple grapple;
+                    if (this.stateMachine && (grapple = (this.stateMachine.state as GauzeGrapple)) != null)
                     {
-                        utility.HookCollision(true, base.transform.position, component3.healthComponent);
+                        grapple.HookCollision(true, base.transform.position, victimBody.healthComponent);
                     }
-                    SetStateOnHurt component4 = component3.GetComponent<SetStateOnHurt>();
-                    if (component4)
+                    SetStateOnHurt victimHurt = victimBody.GetComponent<SetStateOnHurt>();
+                    if (victimHurt)
                     {
-                        component4.SetStun(1.5f);
+                        victimHurt.SetStun(1.5f);
                     }
                 }
                 else
                 {
-                    GauzeGrapple utility2;
-                    if (this.stateMachine && (utility2 = (this.stateMachine.state as GauzeGrapple)) != null)
+                    GauzeGrapple grapple;
+                    if (this.stateMachine && (grapple = (this.stateMachine.state as GauzeGrapple)) != null)
                     {
-                        utility2.HookCollision(false, base.transform.position, null);
+                        grapple.HookCollision(false, base.transform.position, null);
                     }
                 }
             }

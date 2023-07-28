@@ -14,12 +14,9 @@ using MedicMod.Modules;
 
 namespace MedicMod.SkillStates
 {
-    // Create arc from player to target
-    // Calculate position of a dot moving across in that arc
-    // Draw the gauze from the player position to that dot
 
-    // COPIED FireHook.cs
-    // TODO: Make custom gauze projectile controller
+    // TODO: Copy HuntressTrackingSkillDef and CanExecute + IsReady overridden functions. Change SkillDef to that
+
     /*
     public class GauzeGrapple : BaseSkillState
     {
@@ -111,13 +108,19 @@ namespace MedicMod.SkillStates
     }
     */
 
+
     internal class GauzeGrapple : BaseSkillState
     {
+        private MedicTracker medicTracker;
+        private FireProjectileInfo fireProjectileInfo;
+
         public override void OnEnter()
         {
             base.OnEnter();
 
-            FireProjectileInfo fireProjectileInfo = new FireProjectileInfo
+            medicTracker = base.gameObject.GetComponent<MedicTracker>();
+
+            fireProjectileInfo = new FireProjectileInfo
             {
                 crit = base.RollCrit(),
                 damage = base.characterBody.damage,
@@ -128,13 +131,13 @@ namespace MedicMod.SkillStates
                 position = base.GetAimRay().origin,
                 procChainMask = default(ProcChainMask),
                 projectilePrefab = Projectiles.gauzePrefab,
-                rotation = Util.QuaternionSafeLookRotation(base.GetAimRay().direction),
+                rotation = Util.QuaternionSafeLookRotation((medicTracker.GetTrackingTarget().transform.position - base.characterBody.corePosition).normalized),//base.GetAimRay().direction),
                 useFuseOverride = false,
                 useSpeedOverride = false,
                 target = null
             };
             ProjectileManager.instance.FireProjectile(fireProjectileInfo);
-            this.dashVector = base.inputBank.aimDirection;
+            this.dashVector = (medicTracker.GetTrackingTarget().transform.position - base.characterBody.corePosition).normalized; //base.inputBank.aimDirection;
             base.characterDirection.forward = this.dashVector;
             //base.PlayAnimation("FullBody, Override", "hook");
             //Util.PlaySound(FireGrenades.attackSoundString, base.gameObject);
@@ -196,6 +199,9 @@ namespace MedicMod.SkillStates
                 base.characterMotor.velocity = Vector3.zero;
             }
 
+            fireProjectileInfo.rotation = Util.QuaternionSafeLookRotation((medicTracker.GetTrackingTarget().transform.position - base.characterBody.corePosition).normalized);
+            this.dashVector = (medicTracker.GetTrackingTarget().transform.position - base.characterBody.corePosition).normalized;
+
             if (this.collision && base.characterMotor && base.characterDirection)
             {
                 if (inputBank)
@@ -209,7 +215,7 @@ namespace MedicMod.SkillStates
                     }
                 }
                 base.characterDirection.forward = this.dashVector;
-                if (Vector3.Distance(base.transform.position, this.hookPosition) > 7f)
+                if (Vector3.Distance(base.transform.position, medicTracker.GetTrackingTarget().transform.position) > 7f)
                 {
                     base.characterMotor.rootMotion += this.dashVector * this.dashVelocity;
                 }
